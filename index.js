@@ -120,7 +120,7 @@ app.get("/session/:sessID/qrcode/:qrID", async function (req, res) {
   await worker({ sessID: req.params.sessID, qrID: req.params.qrID });
   res.send("Done");
 });
-app.get(":user/:pass", async function (req, res) {
+app.get("/user/:user/:pass", async function (req, res) {
   await display({ user: req.params.user, pass: req.params.pass });
   await timeout(100);
   res.send(name);
