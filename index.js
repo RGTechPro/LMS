@@ -123,7 +123,7 @@ app.get("/session/:sessID/qrcode/:qrID", async function (req, res) {
 app.get("/user/:user/:pass", async function (req, res) {
   await display({ user: req.params.user, pass: req.params.pass });
   await timeout(100);
-  res.json(name);
+  res.json({"name":name});
 });
 
 app.get("/", (req, res) => {
