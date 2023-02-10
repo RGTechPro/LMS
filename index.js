@@ -20,8 +20,8 @@ let worker = async ({ sessID, qrID }) => {
         concurrency: Cluster.CONCURRENCY_CONTEXT,
         maxConcurrency: 10,
 
-        // provide the puppeteer-core library
-        puppeteer,
+    
+        
         // and provide executable path (in this case for a Chrome installation in Ubuntu)
         puppeteerOptions: {
             executablePath: 'chromium-browser',
