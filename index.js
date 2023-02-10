@@ -117,8 +117,8 @@ let display = async ({ user, pass }) => {
   await cluster.close();
 };
 const { Cluster } = require("puppeteer-cluster");
-app.get("/session/:sessID/qrcode/:qrID", async function (req, res) {
-  await worker({ sessID: req.params.sessID, qrID: req.params.qrID });
+app.get("/mark", async function (req, res) {
+  await worker({ sessID: req.query.session, qrID: req.query.qrcode });
   res.send("Done");
 });
 app.get("/user/:user/:pass", async function (req, res) {
