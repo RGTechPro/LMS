@@ -70,11 +70,60 @@ let worker = async ({ sessID, qrID }) => {
   await cluster.idle();
   await cluster.close();
 };
+let name = "";
+let display = async ({ user, pass }) => {
+  const cluster = await Cluster.launch({
+        concurrency: Cluster.CONCURRENCY_CONTEXT,
+        maxConcurrency: 10,
 
+    
+        
+        // and provide executable path (in this case for a Chrome installation in Ubuntu)
+        puppeteerOptions: {
+            executablePath: 'chromium-browser',
+          
+        },
+    });
+
+  await cluster.task(async ({ page, data: userData }) => {
+    await page.goto("https://lms.thapar.edu/moodle/login/");
+    await page.type("#username", userData.username);
+    await page.type("#password", userData.password);
+
+    // Wait and click on first result
+    // console.log(userData);
+    const searchResultSelector = "#loginbtn";
+    await page.waitForSelector(searchResultSelector);
+    await page.click(searchResultSelector);
+    // await timeout(2000);
+
+    let nameSelector = await page.waitForSelector("#actionmenuaction-1");
+    let element = await page.$("#actionmenuaction-1");
+    let user_name = await page.evaluate((el) => el.textContent, element);
+    console.log(user_name);
+    name = user_name;
+
+   
+
+    // await page.screenshot({ path });
+  });
+
+  cluster.queue({username:user ,password:pass});
+
+  // many more pages
+
+  await cluster.idle();
+  await cluster.close();
+};
 const { Cluster } = require("puppeteer-cluster");
 app.get("/session/:sessID/qrcode/:qrID", async function (req, res) {
   await worker({ sessID: req.params.sessID, qrID: req.params.qrID });
   res.send("Done");
+});
+app.get(":user/:pass", async function (req, res) {
+  await display({ user: req.params.user, pass: req.params.pass });
+  await timeout(100);
+  res.send(name);
 });
 
 app.get("/", (req, res) => {
