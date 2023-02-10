@@ -17,9 +17,17 @@ function timeout(ms) {
 }
 let worker = async ({ sessID, qrID }) => {
   const cluster = await Cluster.launch({
-    concurrency: Cluster.CONCURRENCY_CONTEXT,
-    maxConcurrency: 10,
-  });
+        concurrency: Cluster.CONCURRENCY_CONTEXT,
+        maxConcurrency: 10,
+
+        // provide the puppeteer-core library
+        puppeteer,
+        // and provide executable path (in this case for a Chrome installation in Ubuntu)
+        puppeteerOptions: {
+            executablePath: 'chromium-browser',
+          
+        },
+    });
 
   await cluster.task(async ({ page, data: userData }) => {
     await page.goto("https://lms.thapar.edu/moodle/login/");
